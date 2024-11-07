@@ -12,6 +12,6 @@ def get_selection(
 
     mask = shape.to_labels()
     mask = np.pad(mask,((0,2048-mask.shape[0]),(0,2048-mask.shape[1])),'constant')
-    result = np.bitwise_and(data.astype(int),mask.astype(int))
+    result = np.bitwise_and(data.astype(bool),mask.astype(bool))
 
     return (result, {"name":"selection"}, "image")

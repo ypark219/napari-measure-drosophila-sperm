@@ -9,9 +9,16 @@ contributions:
       python_name: napari_measure_drosophila_sperm.get_selection:get_selection
       title: get selection
 
+    - id: napari-measure-drosophila-sperm.find_skeleton
+      python_name: napari_measure_drosophila_sperm.find_skeleton:find_skeleton
+      title: find skeleton
+
   widgets:
     - command: napari-measure-drosophila-sperm.threshold
       display_name: Threshold
 
     - command: napari-measure-drosophila-sperm.get_selection
       display_name: get selection
+
+    - command: napari-measure-drosophila-sperm.find_skeleton
+      display_name: find skeleton

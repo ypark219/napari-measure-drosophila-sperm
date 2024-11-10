@@ -4,11 +4,6 @@ from magicgui import magic_factory
 
 import numpy as np
 import skimage
-from skimage import data
-from skimage.segmentation import clear_border
-from skimage.measure import label
-from skimage.morphology import closing, square, remove_small_objects
-from skimage.color import rgb2gray
 
 # @magic_factory
 # #my edited version. it works on images now but doesn't convert to greyscale
@@ -23,30 +18,36 @@ from skimage.color import rgb2gray
 #     return (data, metadata, layer_type)
 
 
-
-
 # trying with otsu thresholding
 @magic_factory
 # from https://napari.org/0.5.2/tutorials/segmentation/annotate_segmentation.html#segmentation
-def threshold(
-    image: "napari.types.ImageData"
-    # ,
+def threshold_plugin(
+    image: "napari.types.ImageData",
+    filter_maxrange: int = 2,
+    clean_minsize: int = 50,
     # min_size: int=1,
     # conn: int=1
 ) -> "napari.types.LayerDataTuple":
-    grey = rgb2gray(image)
+    grey = skimage.color.rgb2gray(image)
     # apply threshold
     # options: isodata, li, mean, minimum, otsu, triangle, yen, niblack, sauvola
+    # ridge-specific options (slower): https://scikit-image.org/docs/dev/auto_examples/edges/plot_ridge_filter.html#sphx-glr-auto-examples-edges-plot-ridge-filter-py
 
-    thresh = skimage.filters.threshold_niblack(grey)
+    # filtered=skimage.filters.gaussian(grey,truncate=2)
+    # thresh = skimage.filters.threshold_niblack(blurred)
+    filtered = skimage.filters.hessian(grey, range(1, filter_maxrange), black_ridges=True)
+    opened = skimage.morphology.opening(filtered)  # apparently binary_opening is faster but it won't work at all for me
+    labelled = skimage.measure.label(opened)
+    cleaned = skimage.morphology.remove_small_objects(labelled, min_size=clean_minsize)
+    closed = skimage.morphology.closing(cleaned)
     # bw = closing(grey > thresh, square(4))
-    bw=grey>thresh
+    # bw=grey>thresh
 
     # remove artifacts connected to image border
     # cleared = remove_small_objects(clear_border(bw), min_size,conn)
 
-    return (bw, {"name": "segmentation"}, "labels")
-
+    final = closed.astype(bool).astype(int)  # converts to binary image
+    return (final, {"name": "threshold result"}, "image")
 
 
 # redundant

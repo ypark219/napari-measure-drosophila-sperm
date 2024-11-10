@@ -2,7 +2,7 @@ name: napari-measure-drosophila-sperm
 contributions:
   commands:
     - id: napari-measure-drosophila-sperm.threshold
-      python_name: napari_measure_drosophila_sperm:threshold
+      python_name: napari_measure_drosophila_sperm:threshold_plugin
       title: Threshold image
 
     - id: napari-measure-drosophila-sperm.get_selection

@@ -13,6 +13,14 @@ contributions:
       python_name: napari_measure_drosophila_sperm.find_skeleton:find_skeleton
       title: find skeleton
 
+    - id: napari-measure-drosophila-sperm.blur
+      python_name: napari_measure_drosophila_sperm.blur:blur
+      title: blur
+
+    - id: napari-measure-drosophila-sperm.measure
+      python_name: napari_measure_drosophila_sperm.measure:measure
+      title: measure
+
   widgets:
     - command: napari-measure-drosophila-sperm.threshold
       display_name: Threshold
@@ -22,3 +30,9 @@ contributions:
 
     - command: napari-measure-drosophila-sperm.find_skeleton
       display_name: find skeleton
+
+    - command: napari-measure-drosophila-sperm.blur
+      display_name: blur
+
+    - command: napari-measure-drosophila-sperm.measure
+      display_name: measure

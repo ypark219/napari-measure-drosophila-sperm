@@ -2,6 +2,7 @@ import napari
 import skimage as ski
 from magicgui import magic_factory
 from skimage.morphology import skeletonize
+from itertools import chain
 
 @magic_factory
 def find_skeleton(
@@ -18,9 +19,23 @@ def find_skeleton(
     # print(closed1)
     # closed2 = ski.morphology.binary_closing(closed1)
 
+    labelled = ski.measure.label(image.data)
+    flattened = list(chain.from_iterable(labelled))
+    occurences = [0] * (max(flattened)+1)
+    for i in flattened:
+        occurences[i] += 1
+    occurences[0] = 0 # ignore black pixels (background will usually be largest connected component)
+    largest_object_val = occurences.index(max(occurences))
+
+    # only keep largest object
+    for i in range(0,len(labelled)):
+        for j in range(0,len(labelled[i])):
+            if labelled[i][j] != largest_object_val:
+                labelled[i][j] = 0
+
     # perform skeletonization
-    skeleton = skeletonize(image.data, method='zhang')
+    skeleton = skeletonize(labelled.astype(bool), method='zhang')
 
-    largest = ski.morphology.remove_small_objects(skeleton, min_size=min_size, connectivity=2)
+    #largest = ski.morphology.remove_small_objects(skeleton, min_size=min_size, connectivity=2)
 
-    return (largest, {"name":"skeleton"}, "image")
+    return (skeleton, {"name":"skeleton"}, "image")

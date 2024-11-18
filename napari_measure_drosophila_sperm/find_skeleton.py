@@ -9,6 +9,7 @@ def find_skeleton(
     image: "napari.layers.Image",
     closing_iterations: int=1,
     min_size: int=10,
+    items_to_keep: int=1,
 ) -> "napari.types.LayerDataTuple":
     # perform closing
     # closed = image.data
@@ -22,15 +23,25 @@ def find_skeleton(
     labelled = ski.measure.label(image.data)
     flattened = list(chain.from_iterable(labelled))
     occurences = [0] * (max(flattened)+1)
+    largest_object_vals = [0] * items_to_keep
+    
     for i in flattened:
         occurences[i] += 1
     occurences[0] = 0 # ignore black pixels (background will usually be largest connected component)
-    largest_object_val = occurences.index(max(occurences))
+    
+    for i in range(items_to_keep):
+        max_count = max(occurences)
+        largest_object_vals[i] = occurences.index(max_count)
+        occurences[occurences.index(max_count)] = 0
 
-    # only keep largest object
+    # only keep largest objects
     for i in range(0,len(labelled)):
         for j in range(0,len(labelled[i])):
-            if labelled[i][j] != largest_object_val:
+            label_matches = False
+            for k in largest_object_vals:
+                if labelled[i][j] == k:
+                    label_matches = True
+            if not label_matches:
                 labelled[i][j] = 0
 
     # perform skeletonization

@@ -39,4 +39,6 @@ def measure(
         face_color='black',
     )
 
+    print(length)
+
     return None

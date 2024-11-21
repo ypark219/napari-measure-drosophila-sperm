@@ -24,7 +24,7 @@ def find_skeleton(
     flattened = list(chain.from_iterable(labelled))
     occurences = [0] * (max(flattened)+1)
     largest_object_vals = [0] * items_to_keep
-    
+
     for i in flattened:
         occurences[i] += 1
     occurences[0] = 0 # ignore black pixels (background will usually be largest connected component)

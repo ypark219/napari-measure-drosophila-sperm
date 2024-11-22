@@ -3,6 +3,13 @@ import skimage as ski
 from magicgui import magic_factory
 
 @magic_factory
+def denoise(
+    image: "napari.layers.Image"
+) -> "napari.types.LayerDataTuple":
+    denoised= ski.restoration.denoise_wavelet(image.data, channel_axis=-1, convert2ycbcr=True, rescale_sigma=True)
+    return (denoised, {"name": "denoised"}, "image")
+
+@magic_factory
 def blur(
     image: "napari.layers.Image",
     sigma: float=3.0,

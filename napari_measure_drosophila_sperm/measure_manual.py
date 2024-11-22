@@ -30,8 +30,8 @@ def measure_manual(image: "napari.layers.Image"):
                 c1 = data[i + 1, j - 1]
                 c2 = data[i + 1, j]
                 c3 = data[i + 1, j + 1]
-                
-				# not pretty but it works...i think!
+
+                # not pretty but it works...i think!
                 if (a1 > 0) and (a2 == 0) and (b1 == 0):
                     diagonal += 1
                 if (c1 > 0) and (c2 == 0) and (b1 == 0):
@@ -40,7 +40,7 @@ def measure_manual(image: "napari.layers.Image"):
                     diagonal += 1
                 if (c3 > 0) and (c2 == 0) and (b3 == 0):
                     diagonal += 1
-                    
+
                 if a2 > 0:
                     straight += 1
                 if b1 > 0:
@@ -51,5 +51,5 @@ def measure_manual(image: "napari.layers.Image"):
                     straight += 1
     # print(straight)
     # print(diagonal)
-    result = (straight / 2) + (np.sqrt(2)/2 * diagonal)
+    result = (straight / 2) + (np.sqrt(2) / 2 * diagonal) # each 2-pixel connection is counted twice
     print(result)

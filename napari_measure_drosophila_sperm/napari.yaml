@@ -17,6 +17,10 @@ contributions:
       python_name: napari_measure_drosophila_sperm.blur:blur
       title: blur
 
+    - id: napari-measure-drosophila-sperm.denoise
+      python_name: napari_measure_drosophila_sperm.blur:denoise
+      title: denoise
+
     - id: napari-measure-drosophila-sperm.measure
       python_name: napari_measure_drosophila_sperm.measure:measure
       title: measure
@@ -25,9 +29,13 @@ contributions:
       python_name: napari_measure_drosophila_sperm.measure_manual:measure_manual
       title: measure
 
+    - id: napari-measure-drosophila-sperm.detect_circles
+      python_name: napari_measure_drosophila_sperm.detect_circles:detect_circles
+      title: detect circles
+
     - id: napari-measure-drosophila-sperm.remove_circles
       python_name: napari_measure_drosophila_sperm.detect_circles:remove_circles
-      title: detect circles
+      title: remove circles
 
   widgets:
     - command: napari-measure-drosophila-sperm.threshold
@@ -42,11 +50,17 @@ contributions:
     - command: napari-measure-drosophila-sperm.blur
       display_name: blur
 
+    - command: napari-measure-drosophila-sperm.denoise
+      display_name: denoise
+
     - command: napari-measure-drosophila-sperm.measure
       display_name: measure
 
     - command: napari-measure-drosophila-sperm.measure_manual
       display_name: measure 2
+
+    - command: napari-measure-drosophila-sperm.detect_circles
+      display_name: detect circles
 
     - command: napari-measure-drosophila-sperm.remove_circles
       display_name: remove circles

@@ -47,13 +47,13 @@ def threshold_plugin(
     labelled = skimage.measure.label(opened)
     cleaned = skimage.morphology.remove_small_objects(labelled, min_size=clean_minsize)
     # closed = skimage.morphology.closing(cleaned)
-    closed=skimage.morphology.diameter_closing(cleaned, 10, connectivity=2)
+    closed=skimage.morphology.diameter_closing(cleaned, 10, connectivity=1)
     # bw = closing(grey > thresh, square(4))
     # bw=grey>thresh
 
     # remove artifacts connected to image border
     # cleared = remove_small_objects(clear_border(bw), min_size,conn)
-    final = skimage.morphology.dilation(closed)
+    final = skimage.morphology.binary_dilation(closed, skimage.morphology.diamond(3))
     final2 = final.astype(bool).astype(int)  # converts to binary image
     
     return (final2, {"name": "threshold result"}, "image")

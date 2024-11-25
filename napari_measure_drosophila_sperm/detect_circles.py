@@ -11,24 +11,17 @@ from skimage.morphology import square
 def detect_circles(
     image: "napari.layers.Image",
 ) -> "napari.types.LayerDataTuple":
-    # blob_doh and blob_log find blobs but not the correct ones. blob_dog doesn't seem to work at all
-    # test = ski.data.hubble_deep_field()[0:500, 0:500]
-    # blobs = ski.feature.blob_doh(rgb2gray(image.data))
     blobs = ski.feature.blob_log(rgb2gray(image.data))
     viewer = napari.current_viewer()
-    # viewer.add_image(ski.data.hubble_deep_field()[0:500, 0:500])
 
     for blob in blobs:
         y, x, sigma = blob
 
         viewer.add_points(
             np.array([y,x]),
-            # features=features,
-            # text=text,
             size=np.sqrt(2)*sigma,
             face_color="red",
         )
-    #return (threshed, {"name":"thresholded"}, "image")
     return None
 
 

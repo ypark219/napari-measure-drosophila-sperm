@@ -11,7 +11,7 @@ contributions:
 
     - id: napari-measure-drosophila-sperm.find_skeleton
       python_name: napari_measure_drosophila_sperm.find_skeleton:find_skeleton
-      title: find skeleton
+      title: skeletonise
 
     - id: napari-measure-drosophila-sperm.blur
       python_name: napari_measure_drosophila_sperm.blur:blur
@@ -37,6 +37,10 @@ contributions:
       python_name: napari_measure_drosophila_sperm.detect_circles:remove_circles
       title: remove circles
 
+    - id: napari-measure-drosophila-sperm.get_endpoints
+      python_name: napari_measure_drosophila_sperm.find_skeleton:get_endpoints
+      title: get skeleton endpoints
+
   widgets:
     - command: napari-measure-drosophila-sperm.threshold
       display_name: Threshold
@@ -45,7 +49,7 @@ contributions:
       display_name: get selection
 
     - command: napari-measure-drosophila-sperm.find_skeleton
-      display_name: find skeleton
+      display_name: skeletonise
 
     - command: napari-measure-drosophila-sperm.blur
       display_name: blur
@@ -64,3 +68,6 @@ contributions:
 
     - command: napari-measure-drosophila-sperm.remove_circles
       display_name: remove circles
+
+    - command: napari-measure-drosophila-sperm.get_endpoints
+      display_name: get skeleton endpoints

@@ -53,3 +53,4 @@ def measure_manual(image: "napari.layers.Image"):
     # print(diagonal)
     result = (straight / 2) + (np.sqrt(2) / 2 * diagonal) # each 2-pixel connection is counted twice
     print(result)
+    print(result / 3.06)

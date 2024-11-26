@@ -1,6 +1,7 @@
 import napari
 import skimage as ski
 from magicgui import magic_factory
+from . import util,threshold
 
 @magic_factory
 def denoise(
@@ -16,5 +17,7 @@ def blur(
     truncate: float=3.5,
 ) -> "napari.types.LayerDataTuple":
     blurred = ski.filters.gaussian(image.data, sigma=(sigma, sigma), truncate=truncate, channel_axis=-1)
+    grey = util.greyize(blurred)
+    final = threshold.thresh(grey)
 
-    return (blurred, {"name":"blurred"}, "image")
+    return (final, {"name":"blurred"}, "image")

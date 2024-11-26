@@ -2,14 +2,15 @@ import napari
 import skimage
 import numpy as np
 from magicgui import magic_factory
+from . import util
 
 @magic_factory
 def get_selection(
     image: "napari.layers.Image",
     shape: "napari.layers.Shapes"
 ) -> "napari.types.LayerDataTuple":
-    #data = skimage.color.rgb2gray(image.data > 200) #thresholding can be separated out later
-    grey = skimage.color.rgb2gray(image.data)
+    # grey = skimage.color.rgb2gray(image.data)
+    grey = util.greyize(image.data)
 
     mask = shape.to_labels()
     mask = np.pad(mask,((0,2048-mask.shape[0]),(0,2048-mask.shape[1])),'constant')

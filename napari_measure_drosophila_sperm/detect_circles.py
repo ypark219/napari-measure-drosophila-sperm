@@ -3,15 +3,14 @@ import skimage as ski
 from magicgui import magic_factory
 # import cv2
 import numpy as np
-from skimage.color import rgb2gray
-from skimage.color import gray2rgb
 from skimage.morphology import square
+from . import util
 
 @magic_factory
 def detect_circles(
     image: "napari.layers.Image",
-) -> "napari.types.LayerDataTuple":
-    blobs = ski.feature.blob_log(rgb2gray(image.data))
+):
+    blobs = ski.feature.blob_log(util.greyize(image.data))
     viewer = napari.current_viewer()
 
     for blob in blobs:
@@ -22,7 +21,6 @@ def detect_circles(
             size=np.sqrt(2)*sigma,
             face_color="red",
         )
-    return None
 
 
 # def detect_circles(

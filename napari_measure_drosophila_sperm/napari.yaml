@@ -1,8 +1,16 @@
 name: napari-measure-drosophila-sperm
 contributions:
   commands:
+    - id: napari-measure-drosophila-sperm.driver
+      python_name: napari_measure_drosophila_sperm:driver
+      title: main
+
+    - id: napari-measure-drosophila-sperm.downscale
+      python_name: napari_measure_drosophila_sperm:downscale
+      title: downscale
+
     - id: napari-measure-drosophila-sperm.threshold
-      python_name: napari_measure_drosophila_sperm:threshold_plugin
+      python_name: napari_measure_drosophila_sperm.threshold:threshold_plugin
       title: Threshold image
 
     - id: napari-measure-drosophila-sperm.get_selection
@@ -15,11 +23,11 @@ contributions:
 
     - id: napari-measure-drosophila-sperm.blur
       python_name: napari_measure_drosophila_sperm.blur:blur
-      title: blur
+      title: blur + threshold
 
-    - id: napari-measure-drosophila-sperm.denoise
-      python_name: napari_measure_drosophila_sperm.blur:denoise
-      title: denoise
+    # - id: napari-measure-drosophila-sperm.denoise
+    #   python_name: napari_measure_drosophila_sperm.blur:denoise
+    #   title: denoise
 
     - id: napari-measure-drosophila-sperm.measure
       python_name: napari_measure_drosophila_sperm.measure:measure
@@ -31,7 +39,7 @@ contributions:
 
     - id: napari-measure-drosophila-sperm.detect_circles
       python_name: napari_measure_drosophila_sperm.detect_circles:detect_circles
-      title: detect circles
+      title: detect circles (blobs)
 
     - id: napari-measure-drosophila-sperm.remove_circles
       python_name: napari_measure_drosophila_sperm.detect_circles:remove_circles
@@ -42,6 +50,12 @@ contributions:
       title: get skeleton endpoints
 
   widgets:
+    - command: napari-measure-drosophila-sperm.driver
+      display_name: driver
+
+    - command: napari-measure-drosophila-sperm.downscale
+      display_name: downscale
+
     - command: napari-measure-drosophila-sperm.threshold
       display_name: Threshold
 
@@ -52,10 +66,10 @@ contributions:
       display_name: skeletonise
 
     - command: napari-measure-drosophila-sperm.blur
-      display_name: blur
+      display_name: blur + threshold
 
-    - command: napari-measure-drosophila-sperm.denoise
-      display_name: denoise
+    # - command: napari-measure-drosophila-sperm.denoise
+    #   display_name: denoise
 
     - command: napari-measure-drosophila-sperm.measure
       display_name: measure
@@ -64,7 +78,7 @@ contributions:
       display_name: measure 2
 
     - command: napari-measure-drosophila-sperm.detect_circles
-      display_name: detect circles
+      display_name: detect circles (blobs)
 
     - command: napari-measure-drosophila-sperm.remove_circles
       display_name: remove circles

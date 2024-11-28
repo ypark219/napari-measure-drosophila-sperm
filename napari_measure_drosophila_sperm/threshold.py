@@ -2,34 +2,32 @@ import napari
 from magicgui import magic_factory
 import numpy as np
 import skimage
+from . import util
 
 
 # returns: binary image (int)
-def thresh(grey_img):
-    filter_maxrange = 2
-    clean_minsize = 100
-
-    # grey = to_grey(image)
+def thresh(data, filter_maxrange, clean_minsize):
+    grey = util.greyize(data)
 
     filtered = skimage.filters.hessian(
-        grey_img, range(1, filter_maxrange), black_ridges=True
+        grey, range(1, filter_maxrange), black_ridges=True
     )
-    opened = skimage.morphology.opening(filtered)
-    labelled = skimage.measure.label(opened)
+    # opened = skimage.morphology.opening(filtered)
+    # labelled = skimage.measure.label(opened)
 
-    cleaned = skimage.morphology.remove_small_objects(labelled, min_size=clean_minsize)
-    closed = skimage.morphology.diameter_closing(cleaned, 10, connectivity=1)
+    # cleaned = skimage.morphology.remove_small_objects(labelled, min_size=clean_minsize)
+    # closed = skimage.morphology.diameter_closing(cleaned, 10, connectivity=1)
     
 
-    final = skimage.morphology.binary_closing(closed)
-    realfinal = final.astype(bool).astype(int)  # converts to binary image
-    return realfinal
+    # final = skimage.morphology.binary_closing(closed)
+    #realfinal = final.astype(bool).astype(int)  # converts to binary image
+    return filtered
 
 
 @magic_factory
 # from https://napari.org/0.5.2/tutorials/segmentation/annotate_segmentation.html#segmentation
 def threshold_plugin(
-    image: "napari.types.ImageData",
+    image: "napari.layers.Image",
     filter_maxrange: int = 2,
     clean_minsize: int = 100,
     dilate: bool = True,
@@ -37,7 +35,7 @@ def threshold_plugin(
     # conn: int=1
 ) -> "napari.types.LayerDataTuple":
     
-    threshed = thresh(image)
+    threshed = thresh(image.data, filter_maxrange, clean_minsize)
 
     # grey = skimage.color.rgb2gray(image)
 

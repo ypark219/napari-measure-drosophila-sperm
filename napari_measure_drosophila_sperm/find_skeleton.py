@@ -5,8 +5,9 @@ from skimage.morphology import skeletonize
 from itertools import chain
 import numpy as np
 
-def get_largest_component(image, items_to_keep):
-    labelled = ski.measure.label(image.data)
+
+def get_largest_component(data, items_to_keep):
+    labelled = ski.measure.label(image)
     flattened = list(chain.from_iterable(labelled))
     occurences = [0] * (max(flattened) + 1)
     largest_object_vals = [0] * items_to_keep
@@ -32,6 +33,11 @@ def get_largest_component(image, items_to_keep):
             if not label_matches:
                 labelled[i][j] = 0
     return labelled
+
+
+@magic_factory
+def get_largest_plugin(image: "napari.layers.Image") -> "napari.types.LayerDataTuple":
+    return (get_largest_component(image.data, 1), {"name": "skeleton"}, "image")
 
 
 @magic_factory
@@ -76,7 +82,7 @@ def find_skeleton(
     #         if not label_matches:
     #             labelled[i][j] = 0
 
-    labelled = get_largest_component(image,items_to_keep)
+    labelled = get_largest_component(image.data, items_to_keep)
     # perform skeletonization
     skeleton = skeletonize(labelled.astype(bool), method="zhang")
 
@@ -88,8 +94,7 @@ def find_skeleton(
 # get endpoints of skeleton
 @magic_factory
 def get_endpoints(
-    skeleton: "napari.layers.Image",
-    rad:int=32
+    skeleton: "napari.layers.Image", rad: int = 16
 ) -> "napari.types.LayerDataTuple":
     dimensions = skeleton.data.shape
     data = skeleton.data
@@ -120,8 +125,7 @@ def get_endpoints(
                 # combine into array and sum all entries. if the sum is 1, then there is one neighbor
                 arr = [a1, a2, a3, b1, b3, c1, c2, c3]
                 if sum(arr) == 1:
-                    ellipse = ski.draw.ellipse(i,j,rad,rad,dimensions)
-                    datanew[ellipse[0],ellipse[1]] = 1
-
+                    ellipse = ski.draw.ellipse(i, j, rad, rad, dimensions)
+                    datanew[ellipse[0], ellipse[1]] = 1
 
     return (datanew, {"name": "endpts"}, "image")

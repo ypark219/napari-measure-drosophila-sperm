@@ -172,7 +172,7 @@ def remove_circles(
     threshold: int = 250,
     dilation_size: int = 10,
 ) -> "napari.types.LayerDataTuple":
-    threshed = rgb2gray(original_image.data > threshold)
+    threshed = util.greyize(original_image.data > threshold)
     objects = ski.measure.label(threshed)
     large_objects = ski.morphology.remove_small_objects(objects, min_size=min_size)
     dilated = ski.morphology.dilation(large_objects, square(dilation_size))

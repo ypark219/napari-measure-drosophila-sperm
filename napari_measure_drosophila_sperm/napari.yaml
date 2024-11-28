@@ -5,6 +5,16 @@ contributions:
       python_name: napari_measure_drosophila_sperm:driver
       title: main
 
+    - id: napari-measure-drosophila-sperm.morph
+      python_name: napari_measure_drosophila_sperm:morph
+      title: morphology
+    - id: napari-measure-drosophila-sperm.skel
+      python_name: napari_measure_drosophila_sperm:skeletonise
+      title: skeleton only
+    - id: napari-measure-drosophila-sperm.clean
+      python_name: napari_measure_drosophila_sperm:clean
+      title: remove small objs
+
     - id: napari-measure-drosophila-sperm.downscale
       python_name: napari_measure_drosophila_sperm:downscale
       title: downscale
@@ -14,15 +24,15 @@ contributions:
       title: Threshold image
 
     - id: napari-measure-drosophila-sperm.get_selection
-      python_name: napari_measure_drosophila_sperm.get_selection:get_selection
+      python_name: napari_measure_drosophila_sperm.get_selection:get_selection_plugin
       title: get selection
 
     - id: napari-measure-drosophila-sperm.find_skeleton
       python_name: napari_measure_drosophila_sperm.find_skeleton:find_skeleton
       title: skeletonise
 
-    - id: napari-measure-drosophila-sperm.blur
-      python_name: napari_measure_drosophila_sperm.blur:blur
+    - id: napari-measure-drosophila-sperm.blur_thresh
+      python_name: napari_measure_drosophila_sperm.blur:blur_thresh_plugin
       title: blur + threshold
 
     # - id: napari-measure-drosophila-sperm.denoise
@@ -34,7 +44,7 @@ contributions:
       title: measure
 
     - id: napari-measure-drosophila-sperm.measure_manual
-      python_name: napari_measure_drosophila_sperm.measure_manual:measure_manual
+      python_name: napari_measure_drosophila_sperm.measure:measure_manual
       title: measure
 
     - id: napari-measure-drosophila-sperm.detect_circles
@@ -53,6 +63,13 @@ contributions:
     - command: napari-measure-drosophila-sperm.driver
       display_name: driver
 
+    - command: napari-measure-drosophila-sperm.morph
+      display_name: morphology
+    - command: napari-measure-drosophila-sperm.skel
+      display_name: skeleton only
+    - command: napari-measure-drosophila-sperm.clean
+      display_name: remove small objs
+
     - command: napari-measure-drosophila-sperm.downscale
       display_name: downscale
 
@@ -65,7 +82,7 @@ contributions:
     - command: napari-measure-drosophila-sperm.find_skeleton
       display_name: skeletonise
 
-    - command: napari-measure-drosophila-sperm.blur
+    - command: napari-measure-drosophila-sperm.blur_thresh
       display_name: blur + threshold
 
     # - command: napari-measure-drosophila-sperm.denoise

@@ -7,17 +7,21 @@ from . import threshold, util, get_selection, blur
 # plugin order of operations:
 # - "driver"
 # - remove small objs
+# - skeletonise
 # - (opt) get endpoints and re-skeletonise
 # - measure
 
 # TODO:
 # - post-threshing modifications currently don't remove enough noise so try to break up some of the bigger chunks so they are all removed with remove_small_objs
+# - less important: i think get_selection breaks if the selection goes out of image bounds which probably has to do with the downscaling of the shape object in the driver
 
 
 # blurs, thresholds, and skeletonises a selection of a downscaled (50%) image
 @magic_factory
 def driver(
-    image: "napari.layers.Image", shape: "napari.layers.Shapes"
+    image: "napari.layers.Image",
+    shape: "napari.layers.Shapes",
+    blur: bool = False
 ) -> "napari.types.LayerDataTuple":
     shape_small = shape
     downscaled = skimage.transform.rescale(
@@ -31,17 +35,22 @@ def driver(
     viewer.layers.remove(image.name)
     viewer.layers.remove(shape.name)
 
-    blurred = blur.blur(downscaled, 3.0, 3.5)  # returns data, not layerdatatuple
-    threshed = threshold.thresh(blurred, 2, 100)
+    if blur:
+        blurred = blur.blur(downscaled, 3.0, 3.5)  # returns data, not layerdatatuple
+    else:
+        blurred = downscaled
+    threshed = threshold.thresh(blurred, 4, 100)
     # need to threshold before getting selection
     # but get_selection can be rewritten (which will also make this faster)
     selection = get_selection.get_selection(threshed, shape_small)
 
+    opened = skimage.morphology.opening(selection)
     # eroding twice makes the skeletons of the noise reasonably small (might have to be adjusted manually for hard cases)
-    eroded = skimage.morphology.binary_erosion(skimage.morphology.binary_erosion(selection))
-    skeleton = skimage.morphology.skeletonize(eroded.astype(bool), method="zhang")
+    # eroded = skimage.morphology.binary_erosion(skimage.morphology.binary_erosion(selection))
+    # skeleton = skimage.morphology.skeletonize(eroded.astype(bool), method="zhang")
 
-    result = skeleton
+    # result = skimage.feature.canny(selection.astype(float))
+    result = opened
     return (result, {"name": "result"}, "image")
 
 
@@ -57,6 +66,7 @@ def downscale(
 
 # plugins for manual testing, delete later
 
+
 @magic_factory
 def skeletonise(data: "napari.types.ImageData") -> "napari.types.LayerDataTuple":
     result = skimage.morphology.skeletonize(data.astype(bool), method="zhang")
@@ -65,9 +75,11 @@ def skeletonise(data: "napari.types.ImageData") -> "napari.types.LayerDataTuple"
 
 @magic_factory
 def clean(
-    data: "napari.types.ImageData", min_size: int = 100
+    data: "napari.types.ImageData", min_size: int = 50
 ) -> "napari.types.LayerDataTuple":
-    result = skimage.morphology.remove_small_objects(data, min_size, connectivity=2)
+    result = skimage.morphology.remove_small_objects(
+        data.astype(bool), min_size, connectivity=2
+    )
     return (result, {"name": "cleaned"}, "image")
 
 

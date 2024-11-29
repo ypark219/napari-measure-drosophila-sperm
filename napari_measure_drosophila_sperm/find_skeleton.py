@@ -7,7 +7,7 @@ import numpy as np
 
 
 def get_largest_component(data, items_to_keep):
-    labelled = ski.measure.label(image)
+    labelled = ski.measure.label(data)
     flattened = list(chain.from_iterable(labelled))
     occurences = [0] * (max(flattened) + 1)
     largest_object_vals = [0] * items_to_keep

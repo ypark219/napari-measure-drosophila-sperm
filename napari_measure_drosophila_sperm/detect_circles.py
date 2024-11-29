@@ -10,7 +10,7 @@ from . import util
 def detect_circles(
     image: "napari.layers.Image",
 ):
-    blobs = ski.feature.blob_log(util.greyize(image.data))
+    blobs = ski.feature.blob_doh(util.greyize(image.data))
     viewer = napari.current_viewer()
 
     for blob in blobs:
@@ -21,6 +21,7 @@ def detect_circles(
             size=np.sqrt(2)*sigma,
             face_color="red",
         )
+    napari.utils.notifications.show_info("done finding blobs")
 
 
 # def detect_circles(

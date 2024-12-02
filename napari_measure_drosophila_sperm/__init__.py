@@ -21,7 +21,7 @@ from . import threshold, util, get_selection, blur
 def driver(
     image: "napari.layers.Image",
     shape: "napari.layers.Shapes",
-    blur: bool = False
+    blur_bool: bool = False
 ) -> "napari.types.LayerDataTuple":
     shape_small = shape
     downscaled = skimage.transform.rescale(
@@ -35,7 +35,7 @@ def driver(
     viewer.layers.remove(image.name)
     viewer.layers.remove(shape.name)
 
-    if blur:
+    if blur_bool:
         blurred = blur.blur(downscaled, 3.0, 3.5)  # returns data, not layerdatatuple
     else:
         blurred = downscaled

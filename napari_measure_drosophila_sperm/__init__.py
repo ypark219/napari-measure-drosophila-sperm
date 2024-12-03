@@ -39,7 +39,7 @@ def driver(
         viewer.layers.remove(shape.name)
 
     if blur_bool:
-        blurred = blur.blur(downscaled, 3.0, 3.5)  # returns data, not layerdatatuple
+        blurred = blur.blur(downscaled, 2.0, 3.5)  # returns data, not layerdatatuple
     else:
         blurred = downscaled
     threshed = threshold.thresh(blurred, 4, 100)

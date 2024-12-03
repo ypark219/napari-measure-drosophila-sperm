@@ -13,9 +13,8 @@ def get_selection_plugin(
 
 
 def get_selection(data, shape):
-    grey = skimage.util.img_as_ubyte(util.greyize(data))
-    grey = util.greyize(data)
-    img_x, img_y = grey.shape
+    grey = util.greyize(data).astype(int)
+    img_x, img_y = data.shape
 
     mask = shape.to_labels()
     mask_x, mask_y = mask.shape

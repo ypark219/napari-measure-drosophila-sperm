@@ -9,8 +9,11 @@ from . import util
 def thresh(data, filter_maxrange, clean_minsize):
     grey = util.greyize(data)
 
-    filtered = skimage.filters.hessian(
-        grey, range(1, filter_maxrange), black_ridges=True
+    # filtered = skimage.filters.hessian(
+    #     grey, range(1, filter_maxrange), black_ridges=True
+    # )
+    filtered = skimage.filters.meijering(
+        grey, range(1, filter_maxrange), black_ridges=False
     )
     # opened = skimage.morphology.opening(filtered)
     # labelled = skimage.measure.label(opened)
@@ -21,7 +24,9 @@ def thresh(data, filter_maxrange, clean_minsize):
 
     # final = skimage.morphology.binary_closing(closed)
     #realfinal = final.astype(bool).astype(int)  # converts to binary image
-    return filtered
+    median = skimage.filters.median(filtered)
+    denoised = skimage.restoration.denoise_wavelet(median, rescale_sigma=True)
+    return denoised
 
 
 @magic_factory

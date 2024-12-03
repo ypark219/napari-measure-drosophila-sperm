@@ -110,7 +110,7 @@ def morph(
     return (result, {"name": "morphed"}, "image")
 
 
-viewer = napari.current_viewer()
-viewer.window.add_dock_widget(skeletonise(), name="skeletonize")
-viewer.window.add_dock_widget(clean(), name="clean")
-viewer.window.add_dock_widget(measure.measure_manual(), name="measure")
+# viewer = napari.current_viewer()
+# viewer.window.add_dock_widget(skeletonise(), name="skeletonize")
+# viewer.window.add_dock_widget(clean(), name="clean")
+# viewer.window.add_dock_widget(measure.measure_manual(), name="measure")

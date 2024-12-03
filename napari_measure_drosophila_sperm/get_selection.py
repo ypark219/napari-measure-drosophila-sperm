@@ -7,16 +7,16 @@ from . import util
 
 @magic_factory
 def get_selection_plugin(
-    image: "napari.layers.Image",
-    shape: "napari.layers.Shapes"
+    image: "napari.layers.Image", shape: "napari.layers.Shapes"
 ) -> "napari.types.LayerDataTuple":
     return (get_selection(image.data, shape), {"name": "selection"}, "image")
 
 
 def get_selection(data, shape):
-    grey = util.greyize(data).astype(int)
-    img_x, img_y = data.shape
-    
+    grey = skimage.util.img_as_ubyte(util.greyize(data))
+    grey = util.greyize(data)
+    img_x, img_y = grey.shape
+
     mask = shape.to_labels()
     mask_x, mask_y = mask.shape
 
@@ -26,9 +26,11 @@ def get_selection(data, shape):
 
     mask = np.pad(
         mask,
-        ((0, img_x-mask_x), (0, img_y-mask_y)),
+        ((0, img_x - mask_x), (0, img_y - mask_y)),
         "constant",
     )
 
-    result = np.bitwise_and(grey.astype(bool), mask.astype(bool))
-    return result.astype(int)
+    # result = np.bitwise_and(grey.astype(bool), mask.astype(bool))
+    # return np.add(result, np.subtract(1, grey))
+
+    return np.where(mask == 1, grey, 0)

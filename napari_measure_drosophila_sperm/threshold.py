@@ -9,24 +9,22 @@ from . import util
 def thresh(data, filter_maxrange, clean_minsize):
     grey = util.greyize(data)
 
-    # filtered = skimage.filters.hessian(
-    #     grey, range(1, filter_maxrange), black_ridges=True
-    # )
+    filtered = skimage.filters.hessian(
+        grey, range(1, filter_maxrange), black_ridges=True
+    )
+    return filtered
+
+
+def thresh2(data, filter_maxrange):
+    grey = util.greyize(data)
+
     filtered = skimage.filters.meijering(
         grey, range(1, filter_maxrange), black_ridges=False
     )
-    # opened = skimage.morphology.opening(filtered)
-    # labelled = skimage.measure.label(opened)
 
-    # cleaned = skimage.morphology.remove_small_objects(labelled, min_size=clean_minsize)
-    # closed = skimage.morphology.diameter_closing(cleaned, 10, connectivity=1)
-    
-
-    # final = skimage.morphology.binary_closing(closed)
-    #realfinal = final.astype(bool).astype(int)  # converts to binary image
     median = skimage.filters.median(filtered)
     denoised = skimage.restoration.denoise_wavelet(median, rescale_sigma=True)
-    return denoised
+    return skimage.filters.threshold_otsu(denoised).astype(bool).astype(int)
 
 
 @magic_factory
@@ -40,7 +38,7 @@ def threshold_plugin(
     # conn: int=1
 ) -> "napari.types.LayerDataTuple":
     
-    threshed = thresh(image.data, filter_maxrange, clean_minsize)
+    threshed = thresh2(image.data, filter_maxrange)
 
     # grey = skimage.color.rgb2gray(image)
 

@@ -2,7 +2,7 @@ import napari
 from magicgui import magic_factory
 import numpy as np
 import skimage
-from . import threshold, util, get_selection, blur
+from . import threshold, util, get_selection, blur, measure
 
 # plugin order of operations:
 # - "driver"
@@ -13,7 +13,9 @@ from . import threshold, util, get_selection, blur
 
 # TODO:
 # - post-threshing modifications currently don't remove enough noise so try to break up some of the bigger chunks so they are all removed with remove_small_objs
-# - less important: i think get_selection breaks if the selection goes out of image bounds which probably has to do with the downscaling of the shape object in the driver
+# - large glare in WT.C.2_20x (medium)
+# - poor results on cells with overlapping loops (hard cases)
+# otsu min_size? survey all components and try to find a "threshold" for size
 
 
 # blurs, thresholds, and skeletonises a selection of a downscaled (50%) image
@@ -23,26 +25,31 @@ def driver(
     shape: "napari.layers.Shapes",
     blur_bool: bool = False
 ) -> "napari.types.LayerDataTuple":
-    shape_small = shape
-    downscaled = skimage.transform.rescale(
-        util.greyize(image.data), 0.5, anti_aliasing=True
-    )
-    # rescale selection as well
-    shape_small.scale = shape.scale / 2
-    shape_small.data = np.divide(shape.data, 2)
-    # remove original image and shape from viewer
+    SCALE = 0.5
     viewer = napari.current_viewer()
+    # rescale image and selection (if Shape exists), and remove originals
+
+    downscaled = skimage.transform.rescale(util.greyize(image.data), SCALE, anti_aliasing=True)
     viewer.layers.remove(image.name)
-    viewer.layers.remove(shape.name)
+    # if no shape is given, apply to whole image
+    if shape is not None:
+        shape_small = shape
+        shape_small.scale = shape.scale * SCALE
+        shape_small.data = np.multiply(shape.data, SCALE)
+        viewer.layers.remove(shape.name)
 
     if blur_bool:
         blurred = blur.blur(downscaled, 3.0, 3.5)  # returns data, not layerdatatuple
     else:
         blurred = downscaled
     threshed = threshold.thresh(blurred, 4, 100)
-    # need to threshold before getting selection
-    # but get_selection can be rewritten (which will also make this faster)
-    selection = get_selection.get_selection(threshed, shape_small)
+
+    if shape is not None:
+        # need to threshold before getting selection
+        # but get_selection can be rewritten (which will also make this faster)
+        selection = get_selection.get_selection(threshed, shape_small)
+    else:
+        selection = threshed
 
     opened = skimage.morphology.opening(selection)
     # eroding twice makes the skeletons of the noise reasonably small (might have to be adjusted manually for hard cases)
@@ -101,3 +108,9 @@ def morph(
         result = skimage.morphology.closing(image.data)
 
     return (result, {"name": "morphed"}, "image")
+
+
+viewer = napari.current_viewer()
+viewer.window.add_dock_widget(skeletonise(), name="skeletonize")
+viewer.window.add_dock_widget(clean(), name="clean")
+viewer.window.add_dock_widget(measure.measure_manual(), name="measure")

@@ -15,12 +15,18 @@ def get_selection_plugin(
 
 def get_selection(data, shape):
     grey = util.greyize(data).astype(int)
-    dimensions = data.shape
-
+    img_x, img_y = data.shape
+    
     mask = shape.to_labels()
+    mask_x, mask_y = mask.shape
+
+    # disregard parts of the mask outside img bounds
+    mask_x = mask_x if mask_x <= img_x else img_x
+    mask_y = mask_y if mask_y <= img_y else img_y
+
     mask = np.pad(
         mask,
-        ((0, dimensions[0] - mask.shape[0]), (0, dimensions[1] - mask.shape[1])),
+        ((0, img_x-mask_x), (0, img_y-mask_y)),
         "constant",
     )
 

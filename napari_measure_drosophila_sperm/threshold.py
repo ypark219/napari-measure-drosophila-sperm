@@ -30,7 +30,7 @@ def threshold_plugin(
     image: "napari.layers.Image",
     filter_maxrange: int = 2,
     clean_minsize: int = 100,
-    dilate: bool = True,
+    dilate: bool = False,
     # min_size: int=1,
     # conn: int=1
 ) -> "napari.types.LayerDataTuple":

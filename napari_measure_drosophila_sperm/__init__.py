@@ -37,26 +37,15 @@ def driver(
         shape_small.scale = shape.scale * SCALE
         shape_small.data = np.multiply(shape.data, SCALE)
         viewer.layers.remove(shape.name)
-
-    if blur_bool:
-        blurred = blur.blur(downscaled, 3.0, 3.5)  # returns data, not layerdatatuple
+        selection = get_selection.get_selection(downscaled, shape_small)
     else:
-        blurred = downscaled
+        selection = downscaled
+
+    blurred = blur.blur(selection, 3.0, 3.5) if blur_bool else selection
+
     threshed = threshold.thresh(blurred, 4, 100)
+    opened = skimage.morphology.opening(threshed.astype(int))
 
-    if shape is not None:
-        # need to threshold before getting selection
-        # but get_selection can be rewritten (which will also make this faster)
-        selection = get_selection.get_selection(threshed, shape_small)
-    else:
-        selection = threshed
-
-    opened = skimage.morphology.opening(selection)
-    # eroding twice makes the skeletons of the noise reasonably small (might have to be adjusted manually for hard cases)
-    # eroded = skimage.morphology.binary_erosion(skimage.morphology.binary_erosion(selection))
-    # skeleton = skimage.morphology.skeletonize(eroded.astype(bool), method="zhang")
-
-    # result = skimage.feature.canny(selection.astype(float))
     result = opened
     return (result, {"name": "result"}, "image")
 

@@ -29,7 +29,4 @@ def get_selection(data, shape):
         "constant",
     )
 
-    # result = np.bitwise_and(grey.astype(bool), mask.astype(bool))
-    # return np.add(result, np.subtract(1, grey))
-
     return np.where(mask == 1, grey, 0)

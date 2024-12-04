@@ -37,39 +37,13 @@ def threshold_plugin(
     # min_size: int=1,
     # conn: int=1
 ) -> "napari.types.LayerDataTuple":
-    
+
     threshed = thresh2(image.data, filter_maxrange)
 
-    # grey = skimage.color.rgb2gray(image)
+    final = (
+        skimage.morphology.binary_dilation(threshed, skimage.morphology.diamond(3))
+        if dilate
+        else threshed
+    )
 
-    # # apply threshold
-    # # options: isodata, li, mean, minimum, otsu, triangle, yen, niblack, sauvola
-    # # ridge-specific options (slower): https://scikit-image.org/docs/dev/auto_examples/edges/plot_ridge_filter.html#sphx-glr-auto-examples-edges-plot-ridge-filter-py
-
-    # # blurred=skimage.filters.gaussian(grey,truncate=2)
-    # # filtered = skimage.filters.threshold_sauvola(grey)
-    # filtered = skimage.filters.hessian(
-    #     grey, range(1, filter_maxrange), black_ridges=True
-    # )
-    # opened = skimage.morphology.opening(
-    #     filtered
-    # )  # apparently binary_opening is faster but it won't work at all for me
-    # labelled = skimage.measure.label(opened)
-    # cleaned = skimage.morphology.remove_small_objects(labelled, min_size=clean_minsize)
-    # # closed = skimage.morphology.closing(cleaned)
-    # closed = skimage.morphology.diameter_closing(cleaned, 10, connectivity=1)
-    # # bw = closing(grey > thresh, square(4))
-    # # bw=grey>thresh
-
-    # # remove artifacts connected to image border
-    # # cleared = remove_small_objects(clear_border(bw), min_size,conn)
-    if dilate:
-        final = skimage.morphology.binary_dilation(
-            threshed, skimage.morphology.diamond(3)
-        )
-    else:
-        final = threshed
-
-    # final3 = skimage.morphology.binary_closing(final)
-    # final2 = final3.astype(bool).astype(int)  # converts to binary image
     return (final, {"name": "threshold result"}, "image")

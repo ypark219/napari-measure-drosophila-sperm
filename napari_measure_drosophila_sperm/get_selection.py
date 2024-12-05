@@ -11,10 +11,16 @@ def get_selection_plugin(
 ) -> "napari.types.LayerDataTuple":
     return (get_selection(image.data, shape), {"name": "selection"}, "image")
 
+@magic_factory
+def remove_selection_plugin(
+    image: "napari.layers.Image", shape: "napari.layers.Shapes"
+) -> "napari.types.LayerDataTuple":
+    return (remove_selection(image.data, shape), {"name": "removed"}, "image")
 
-def get_selection(data, shape):
-    grey = util.greyize(data).astype(int)
-    img_x, img_y = data.shape
+
+def selection_helper(data, shape):
+    grey = util.greyize(data)
+    img_x, img_y = grey.shape
 
     mask = shape.to_labels()
     mask_x, mask_y = mask.shape
@@ -28,5 +34,15 @@ def get_selection(data, shape):
         ((0, img_x - mask_x), (0, img_y - mask_y)),
         "constant",
     )
+    return grey, mask
 
+
+def get_selection(data, shape):
+    grey, mask = selection_helper(data, shape)
     return np.where(mask == 1, grey, 0)
+
+
+def remove_selection(data, shape):
+    (grey, mask) = selection_helper(data, shape)
+
+    return np.where(mask == 1, 0, grey)

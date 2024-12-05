@@ -27,8 +27,8 @@ def driver(
 ) -> "napari.types.LayerDataTuple":
     SCALE = 0.5
     viewer = napari.current_viewer()
+    
     # rescale image and selection (if Shape exists), and remove originals
-
     downscaled = skimage.transform.rescale(util.greyize(image.data), SCALE, anti_aliasing=True)
     viewer.layers.remove(image.name)
     # if no shape is given, apply to whole image
@@ -43,12 +43,24 @@ def driver(
 
     blurred = blur.blur(selection, 3.0, 3.5) if blur_bool else selection
 
-    threshed = threshold.thresh(blurred, 4, 100)
+    threshed = threshold.thresh(blurred, 4)
     opened = skimage.morphology.opening(threshed.astype(int))
 
     result = opened
     return (result, {"name": "result"}, "image")
 
+@magic_factory
+def driver2(
+    image: "napari.layers.Image",
+    shape: "napari.layers.Shapes"
+) -> "napari.types.LayerDataTuple":
+    selection = get_selection.get_selection(image.data, shape)
+
+    threshed = threshold.thresh2(selection, 2, 2)
+    skel = skimage.morphology.skeletonize(threshed.astype(bool), method="zhang")
+
+    result = skel
+    return (result, {"name": "result"}, "image")
 
 # resize image to half its original size and delete original layer
 @magic_factory
@@ -71,7 +83,7 @@ def skeletonise(data: "napari.types.ImageData") -> "napari.types.LayerDataTuple"
 
 @magic_factory
 def clean(
-    data: "napari.types.ImageData", min_size: int = 50
+    data: "napari.types.ImageData", min_size: int = 5
 ) -> "napari.types.LayerDataTuple":
     result = skimage.morphology.remove_small_objects(
         data.astype(bool), min_size, connectivity=2

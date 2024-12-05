@@ -1,13 +1,14 @@
 import napari
-import skimage as ski
+import skimage
 from magicgui import magic_factory
 from skimage.morphology import skeletonize
 from itertools import chain
 import numpy as np
+from . import measure
 
 
 def get_largest_component(data, items_to_keep):
-    labelled = ski.measure.label(data)
+    labelled = skimage.measure.label(data)
     flattened = list(chain.from_iterable(labelled))
     occurences = [0] * (max(flattened) + 1)
     largest_object_vals = [0] * items_to_keep
@@ -36,8 +37,13 @@ def get_largest_component(data, items_to_keep):
 
 
 @magic_factory
-def get_largest_plugin(image: "napari.layers.Image") -> "napari.types.LayerDataTuple":
-    return (get_largest_component(image.data, 1), {"name": "skeleton"}, "image")
+def get_largest_plugin(
+    image: "napari.layers.Image", and_measure: bool = True
+) -> "napari.types.LayerDataTuple":
+    comp = get_largest_component(image.data, 1)
+    if and_measure:
+        measure.measure_manual(comp)
+    return (comp, {"name": "largest"}, "image")
 
 
 @magic_factory
@@ -94,7 +100,7 @@ def find_skeleton(
 # get endpoints of skeleton
 @magic_factory
 def get_endpoints(
-    skeleton: "napari.layers.Image", rad: int = 16
+    skeleton: "napari.layers.Image", rad: int = 8, and_reskeletonize: bool = False
 ) -> "napari.types.LayerDataTuple":
     dimensions = skeleton.data.shape
     data = skeleton.data
@@ -125,7 +131,12 @@ def get_endpoints(
                 # combine into array and sum all entries. if the sum is 1, then there is one neighbor
                 arr = [a1, a2, a3, b1, b3, c1, c2, c3]
                 if sum(arr) == 1:
-                    ellipse = ski.draw.ellipse(i, j, rad, rad, dimensions)
+                    ellipse = skimage.draw.ellipse(i, j, rad, rad, dimensions)
                     datanew[ellipse[0], ellipse[1]] = 1
 
-    return (datanew, {"name": "endpts"}, "image")
+    result = (
+        skimage.morphology.skeletonize(datanew.astype(bool), method="zhang")
+        if and_reskeletonize
+        else datanew
+    )
+    return (result, {"name": "endpts"}, "image")

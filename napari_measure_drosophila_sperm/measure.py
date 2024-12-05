@@ -46,12 +46,9 @@ def measure(
 
     return None
 
-
-@magic_factory
-def measure_manual(image: "napari.layers.Image"):
+def measure_manual(data):
     straight = 0
     diagonal = 0
-    data = image.data
 
     dimensions = data.shape
     result = 0
@@ -101,3 +98,8 @@ def measure_manual(image: "napari.layers.Image"):
         scaled_result *= 2
         
     napari.utils.notifications.show_info(f"result scaled for {dimensions[0]}x{dimensions[1]} dimensions: {scaled_result}\noriginal result: {result}")
+
+
+@magic_factory
+def measure_manual_plugin(image: "napari.layers.Image"):
+    measure_manual(image.data)

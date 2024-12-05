@@ -4,6 +4,9 @@ contributions:
     - id: napari-measure-drosophila-sperm.driver
       python_name: napari_measure_drosophila_sperm:driver
       title: main
+    - id: napari-measure-drosophila-sperm.driver2
+      python_name: napari_measure_drosophila_sperm:driver2
+      title: main2
 
     - id: napari-measure-drosophila-sperm.morph
       python_name: napari_measure_drosophila_sperm:morph
@@ -26,6 +29,13 @@ contributions:
     - id: napari-measure-drosophila-sperm.get_selection
       python_name: napari_measure_drosophila_sperm.get_selection:get_selection_plugin
       title: get selection
+    - id: napari-measure-drosophila-sperm.remove_selection
+      python_name: napari_measure_drosophila_sperm.get_selection:remove_selection_plugin
+      title: remove selection
+
+    - id: napari-measure-drosophila-sperm.get_largest
+      python_name: napari_measure_drosophila_sperm.find_skeleton:get_largest_plugin
+      title: get largest comp
 
     - id: napari-measure-drosophila-sperm.find_skeleton
       python_name: napari_measure_drosophila_sperm.find_skeleton:find_skeleton
@@ -39,12 +49,12 @@ contributions:
     #   python_name: napari_measure_drosophila_sperm.blur:denoise
     #   title: denoise
 
-    - id: napari-measure-drosophila-sperm.measure
-      python_name: napari_measure_drosophila_sperm.measure:measure
-      title: measure
+    # - id: napari-measure-drosophila-sperm.measure
+    #   python_name: napari_measure_drosophila_sperm.measure:measure
+    #   title: measure
 
     - id: napari-measure-drosophila-sperm.measure_manual
-      python_name: napari_measure_drosophila_sperm.measure:measure_manual
+      python_name: napari_measure_drosophila_sperm.measure:measure_manual_plugin
       title: measure
 
     - id: napari-measure-drosophila-sperm.detect_circles
@@ -62,6 +72,8 @@ contributions:
   widgets:
     - command: napari-measure-drosophila-sperm.driver
       display_name: driver
+    - command: napari-measure-drosophila-sperm.driver2
+      display_name: driver2
 
     - command: napari-measure-drosophila-sperm.morph
       display_name: morphology
@@ -78,6 +90,11 @@ contributions:
 
     - command: napari-measure-drosophila-sperm.get_selection
       display_name: get selection
+    - command: napari-measure-drosophila-sperm.remove_selection
+      display_name: remove selection
+
+    - command: napari-measure-drosophila-sperm.get_largest
+      display_name: get largest comp
 
     - command: napari-measure-drosophila-sperm.find_skeleton
       display_name: skeletonise
@@ -88,8 +105,8 @@ contributions:
     # - command: napari-measure-drosophila-sperm.denoise
     #   display_name: denoise
 
-    - command: napari-measure-drosophila-sperm.measure
-      display_name: measure
+    # - command: napari-measure-drosophila-sperm.measure
+    #   display_name: measure
 
     - command: napari-measure-drosophila-sperm.measure_manual
       display_name: measure 2

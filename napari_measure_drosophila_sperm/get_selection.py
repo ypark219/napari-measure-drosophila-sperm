@@ -9,13 +9,19 @@ from . import util
 def get_selection_plugin(
     image: "napari.layers.Image", shape: "napari.layers.Shapes"
 ) -> "napari.types.LayerDataTuple":
-    return (get_selection(image.data, shape), {"name": "selection"}, "image")
+    viewer = napari.current_viewer()
+    viewer.layers.remove(image.name)
+    viewer.layers.remove(shape.name)
+    return (get_selection(image.data, shape), {"name": image.name}, "image")
 
 @magic_factory
 def remove_selection_plugin(
     image: "napari.layers.Image", shape: "napari.layers.Shapes"
 ) -> "napari.types.LayerDataTuple":
-    return (remove_selection(image.data, shape), {"name": "removed"}, "image")
+    viewer = napari.current_viewer()
+    viewer.layers.remove(image.name)
+    viewer.layers.remove(shape.name)
+    return (remove_selection(image.data, shape), {"name": image.name}, "image")
 
 
 def selection_helper(data, shape):

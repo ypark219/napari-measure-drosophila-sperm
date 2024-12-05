@@ -17,14 +17,21 @@ def thresh(data, filter_maxrange):
 
 def thresh2(data, filter_maxrange, thresh):
     grey = util.greyize(data)
+    tophat = skimage.morphology.white_tophat(grey, skimage.morphology.disk(1))
 
     filtered = skimage.filters.meijering(
-        grey, range(1, filter_maxrange), black_ridges=False
+        grey - tophat, range(1, filter_maxrange), black_ridges=False
     )
 
     median = skimage.filters.median(filtered)
-    denoised = skimage.restoration.denoise_wavelet(median, rescale_sigma=True)
-    return skimage.util.img_as_ubyte(denoised) > thresh
+    # denoised = skimage.restoration.denoise_wavelet(median, rescale_sigma=True)
+    return skimage.util.img_as_ubyte(median) > thresh
+
+
+def thresh3(data):
+    grey = util.greyize(data)
+    thresh = skimage.filters.threshold_local(grey, 35,offset=101)
+    return grey > thresh
 
 
 @magic_factory
@@ -36,7 +43,8 @@ def threshold_plugin(
     dilate: bool = False,
 ) -> "napari.types.LayerDataTuple":
     filter_maxrange=2
-    threshed = thresh2(image.data, filter_maxrange, thresh)
+    # threshed = thresh2(image.data, filter_maxrange, thresh)
+    threshed = thresh3(image.data)
 
     final = (
         skimage.morphology.binary_dilation(threshed, skimage.morphology.diamond(3))

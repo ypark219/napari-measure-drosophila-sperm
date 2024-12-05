@@ -64,12 +64,12 @@ def driver2(
         viewer.layers.remove(shape.name)
         selection = get_selection.get_selection(threshed, shape_small)
     else:
-        selection = threshed\
+        selection = threshed
 
     skel = skimage.morphology.skeletonize(selection.astype(bool), method="zhang")
 
     result = skel
-    return (result, {"name": "result"}, "image")
+    return (result, {"name": image.name}, "image")
 
 # resize image to half its original size and delete original layer
 @magic_factory
@@ -92,12 +92,13 @@ def skeletonise(data: "napari.types.ImageData") -> "napari.types.LayerDataTuple"
 
 @magic_factory
 def clean(
-    data: "napari.types.ImageData", min_size: int = 5
+    image: "napari.layers.Image", min_size: int = 5
 ) -> "napari.types.LayerDataTuple":
     result = skimage.morphology.remove_small_objects(
-        data.astype(bool), min_size, connectivity=2
+        image.data.astype(bool), min_size, connectivity=2
     )
-    return (result, {"name": "cleaned"}, "image")
+    napari.current_viewer().layers.remove(image.name)
+    return (result, {"name": image.name}, "image")
 
 
 @magic_factory()

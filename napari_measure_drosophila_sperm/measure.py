@@ -99,6 +99,26 @@ def measure_manual(data):
         
     napari.utils.notifications.show_info(f"result scaled for {dimensions[0]}x{dimensions[1]} dimensions: {scaled_result}\noriginal result: {result}")
 
+    viewer = napari.current_viewer()
+
+    features = {
+        "length": np.array([scaled_result]),
+    }
+
+    text = {
+        "string": "Length is {length:.2f} micrometers",
+        "size": 16,
+        "color": "red",
+        "translation": np.array([-30, 0]),
+    }
+
+    viewer.add_points(
+        np.array([[len(data) / 2, len(data[0]) / 2]]),
+        features=features,
+        text=text,
+        size=16,
+        face_color="black",
+    )
 
 @magic_factory
 def measure_manual_plugin(image: "napari.layers.Image"):

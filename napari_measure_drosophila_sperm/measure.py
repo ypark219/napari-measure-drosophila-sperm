@@ -1,50 +1,9 @@
 import napari
 import numpy as np
-import skimage as ski
 from magicgui import magic_factory
-from napari.utils.notifications import show_info
 
 SCALE_FACTOR = 3.06
 
-
-@magic_factory
-def measure(
-    image: "napari.layers.Image",
-    true_val: float = 0.0,
-) -> "napari.types.LayerDataTuple":
-    length = ski.measure.perimeter(image.data) / SCALE_FACTOR
-    # print(image.data.sum())
-    # print(np.count_nonzero(image.data))
-    # observed = ski.measure.perimeter(image.data) / 3.06
-    # print(observed)
-    # print((abs(observed - true_val) / true_val) * 100)
-
-    viewer = napari.current_viewer()
-
-    features = {
-        "length": np.array([length]),
-    }
-
-    text = {
-        "string": "Length is {length:.2f} micrometers",
-        "size": 16,
-        "color": "red",
-        "translation": np.array([-30, 0]),
-    }
-
-    # points_layer = viewer.add_points(
-    viewer.add_points(
-        # TODO: move this point somewhere else
-        np.array([[len(image.data) / 2, len(image.data[0]) / 2]]),
-        features=features,
-        text=text,
-        size=16,
-        face_color="black",
-    )
-
-    print(length)
-
-    return None
 
 def measure_manual(data):
     straight = 0
@@ -90,14 +49,19 @@ def measure_manual(data):
                 if c2 > 0:
                     straight += 1
 
-    result = (straight / 2) + (np.sqrt(2) / 2 * diagonal)  # each 2-pixel connection is counted twice
+    result = (straight / 2) + (
+        np.sqrt(2) / 2 * diagonal
+    )  # each 2-pixel connection is counted twice
     scaled_result = result / SCALE_FACTOR
 
     # if downscaling has been applied, adjust scaled result to match
+    # hardcoded assuming input images are squares of size 2048 or 1024
     if dimensions[0] == 1024:
         scaled_result *= 2
-        
-    napari.utils.notifications.show_info(f"result scaled for {dimensions[0]}x{dimensions[1]} dimensions: {scaled_result}\noriginal result: {result}")
+
+    napari.utils.notifications.show_info(
+        f"result scaled for {dimensions[0]}x{dimensions[1]} dimensions: {scaled_result}\noriginal result: {result}"
+    )
 
     viewer = napari.current_viewer()
 
@@ -116,10 +80,11 @@ def measure_manual(data):
         np.array([[len(data) / 2, len(data[0]) / 2]]),
         features=features,
         text=text,
-        size=16,
+        size=10,
         face_color="black",
     )
 
+
 @magic_factory
-def measure_manual_plugin(image: "napari.layers.Image"):
+def measure_manual_widget(image: "napari.layers.Image"):
     measure_manual(image.data)

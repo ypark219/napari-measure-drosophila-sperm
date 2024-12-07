@@ -1,12 +1,11 @@
 import napari
-import skimage
 import numpy as np
 from magicgui import magic_factory
 from . import util
 
 
 @magic_factory
-def get_selection_plugin(
+def get_selection_widget(
     image: "napari.layers.Image", shape: "napari.layers.Shapes"
 ) -> "napari.types.LayerDataTuple":
     viewer = napari.current_viewer()
@@ -14,8 +13,9 @@ def get_selection_plugin(
     viewer.layers.remove(shape.name)
     return (get_selection(image.data, shape), {"name": image.name}, "image")
 
+
 @magic_factory
-def remove_selection_plugin(
+def remove_selection_widget(
     image: "napari.layers.Image", shape: "napari.layers.Shapes"
 ) -> "napari.types.LayerDataTuple":
     viewer = napari.current_viewer()

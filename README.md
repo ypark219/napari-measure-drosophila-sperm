@@ -3,7 +3,7 @@
 ## Installation:
 1. Download plugin
 2. In the command line, navgiate to the plugin folder
-3. `pip install .`
+3. `pip install -e .`
 
 ## Access:
 #### Option 1:

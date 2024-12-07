@@ -55,7 +55,7 @@ def patch_skeleton_widget(
     datanew = skeleton.data.astype(int)
 
     # iterate through every point and check its number of neighbors
-    # if 2 neighbors, mark it as an endpoint
+    # if 1 neighbor, mark it as an endpoint
     for i in range(1, dimensions[0] - 2):
         for j in range(1, dimensions[1] - 2):
             curr = data[i][j]

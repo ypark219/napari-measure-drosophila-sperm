@@ -22,6 +22,7 @@ def driver(
         util.greyize(image.data), SCALE, anti_aliasing=True
     )
     viewer.layers.remove(image.name)
+    viewer.add_image(downscaled, name="original image")
     threshed = threshold.thresh(downscaled, 2)
 
     # if no shape is given, apply to whole image

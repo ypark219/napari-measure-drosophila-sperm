@@ -18,12 +18,11 @@ def thresh(data, thresh):
 
 @magic_factory
 def clean_widget(
-    image: "napari.layers.Image", min_size: int = 50, and_measure: bool = True
+    image: "napari.layers.Image", min_size: int = 50, and_measure: bool = False
 ) -> "napari.types.LayerDataTuple":
     result = skimage.morphology.remove_small_objects(
         image.data.astype(bool), min_size, connectivity=2
     )
-    napari.current_viewer().layers.remove(image.name)
     if and_measure:
         measure.measure_manual(result)
-    return (result, {"name": image.name}, "image")
+    return (result, {"name": "denoised"}, "image")
